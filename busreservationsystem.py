@@ -50,7 +50,11 @@ def authority_login():# AUTHORITY LOGIN TO ENTER AND DELETE BUSES DATA
            for i in range(0, inp):
             stage_name = input(f"Enter stage {i + 1} * ")
             toa = input("Enter time of arrival  __:__ AM or PM * ")
-            price = int(input("Enter price * "))
+            try:
+                price = int(input("Enter price * "))
+            except ValueError:
+                print("invalid price \nsecurity threat login once more")
+                return
             cursor.execute("insert into authority (stage_name,time_of_arrival,price)values(%s,%s,%s)",
                            (stage_name, toa, price))
         else:
@@ -241,23 +245,27 @@ def bookseats():# FUNCTION TO BOOK SEATS
                    continue
             st="randam"
             ed="random"
-
-            while st!=None and ed !=None:
+            var=0
+            stp=None
+            edp='random'
+            while stp!=edp:
               st = input("Enter starting point : ")
-              cursor.execute("select stage_name from authority where stage_name = %s",(st))
+              cursor.execute("select stage_name from authority where stage_name = %s",(st,))
               spr=cursor.fetchone()
               if spr==None:
                 print("starting point not matched !!!! ")
                 continue
               else:
                   stp="true"
-              ed = input("Enter ending point : ")
-              cursor.execute("select stage_name from authority where stage_name =%s",(ed,))
-              epr=cursor.fetchone()
-              if epr==None:
+
+              while var!=3:
+                ed = input("Enter ending point : ")
+                cursor.execute("select stage_name from authority where stage_name =%s",(ed,))
+                epr=cursor.fetchone()
+                if epr==None:
                     print("ending point not matched !!!! ")
-                    continue
-              else:
+                    var+=1
+                else:
                     edp="true"
 
               if stp==edp:
@@ -302,9 +310,12 @@ def bookseats():# FUNCTION TO BOOK SEATS
                       continue
               st = "randam"
               ed = "random"
-              while st != None and ed != None:
+              stp=None
+              edp="random"
+              var = 0
+              while stp!=edp:
                 st = input("Enter starting point : ")
-                cursor.execute("select stage_name from authority where stage_name = %s", (st))
+                cursor.execute("select stage_name from authority where stage_name = %s", (st,))
                 spr = cursor.fetchone()
                 if spr == None:
                     print("starting point not matched !!!! ")
@@ -312,16 +323,22 @@ def bookseats():# FUNCTION TO BOOK SEATS
                 else:
                     stp = "true"
 
-                ed = input("Enter ending point : ")
-                cursor.execute("select stage_name from authority where stage_name =%s", (st))
-                epr = cursor.fetchone()
-                if epr == None:
-                  print("ending point not matched !!!! ")
-                  continue
-                else:
-                  edp = "true"
+                edp=None
+                while var != 3:
+                    ed = input("Enter ending point : ")
+                    cursor.execute("select stage_name from authority where stage_name =%s", (ed,))
+                    epr = cursor.fetchone()
+                    if epr == None:
+                        print("ending point not matched !!!! ")
+                        var += 1
+                    else:
+                        edp = "true"
+                        break
+                if var==3:
+                    return
                 if stp == edp:
                     break
+
               i = payment(st, ed)
               if i == 3:
                    return
