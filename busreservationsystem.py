@@ -1,4 +1,6 @@
 from random import randint
+from datetime import date 
+
 import pymysql
 conn=pymysql.connect(
     host="localhost",
@@ -30,6 +32,7 @@ def authority_login():# AUTHORITY LOGIN TO ENTER AND DELETE BUSES DATA
                 cursor.execute("truncate authority")
                 exit ()
         if inp=="GPREC@UPDATE":
+           date=input("Enter date of journey __-__-____ * ")
            bus_no=input("Enter bus number * ").upper()
            starting_station=input("Enter starting station * ").upper()
 
@@ -40,7 +43,7 @@ def authority_login():# AUTHORITY LOGIN TO ENTER AND DELETE BUSES DATA
            except ValueError:
                print("INVALID NUMBER  \n SECURITY THREAT<<<<<<< LOGIN ONCE MORE ")
                return
-           cursor.execute("insert into points (sp,ep,bus_no,seats)values(%s,%s,%s,%s)",(starting_station,ending_station,bus_no,seats))
+           cursor.execute("insert into points (sp,ep,bus_no,seats,date_info)values(%s,%s,%s,%s,%s)",(starting_station,ending_station,bus_no,seats,date))
            cursor.execute("insert into authority(stage_name,time_of_arrival,price) values(%s,%s,%s)",(starting_station,toa,"0"))
            try:
               inp = int(input("Enter no of stages * "))
@@ -90,7 +93,11 @@ def payment(st,ed):# PAYMENT FUNCTION
     pay=cursor.fetchall()
     price=int(pay[1][0])-int(pay[0][0])
     print(f"price {price}")
-    pay_con=int(input("CLICK 8 TO PAY : "))
+    try :
+        pay_con=int(input("CLICK 8 TO PAY : "))
+    except ValueError :
+        print("INVALID OPTION ")
+        return 0
     if pay_con==8:
         i=0
         while i!=3:
@@ -267,11 +274,11 @@ def bookseats():# FUNCTION TO BOOK SEATS
                     var+=1
                 else:
                     edp="true"
-
+                    break
               if stp==edp:
                   break
             i=payment(st,ed)
-            if i==3:
+            if i==3 or i==0:
                 return
             reservation(bs, name, age, sex, mobile_no, st, ed)
 
@@ -340,7 +347,7 @@ def bookseats():# FUNCTION TO BOOK SEATS
                     break
 
               i = payment(st, ed)
-              if i == 3:
+              if i == 3 or i==0:
                    return
               reservation(bs, name, age, sex, mobile_no, st, ed)
 # CHECKING IF THE BUSES ARE AVAILABLE OR NOT
