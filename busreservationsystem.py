@@ -1,5 +1,5 @@
 from random import randint
-from datetime import date 
+from datetime import date
 
 import pymysql
 conn=pymysql.connect(
@@ -32,7 +32,7 @@ def authority_login():# AUTHORITY LOGIN TO ENTER AND DELETE BUSES DATA
                 cursor.execute("truncate authority")
                 exit ()
         if inp=="GPREC@UPDATE":
-           date=input("Enter date of journey __-__-____ * ")
+           date=input("Enter date of journey  YYYY-MM-DD * ")
            bus_no=input("Enter bus number * ").upper()
            starting_station=input("Enter starting station * ").upper()
 
@@ -77,7 +77,7 @@ def display(): #DISPLAY BOARD FUNCTION
         for i in val:
 
           print(f"******--WELCOME TO GPREC TRAVELS FROM [{i[0]} TO {i[1]}]--****** ")
-          print(f"BUS NO {i[2]} NO OF SEATS {i[3]}")
+          print(f"BUS NO {i[2]} :  NO OF SEATS {i[3]}  JOURNEY DATE : {i[4]}")
 def view_stopings():
     print("")
     cursor.execute("select stage,stage_name,time_of_arrival from authority ")
@@ -169,7 +169,7 @@ def bookingseats(i,nos):
         if sn == bs:
             print(f"seat {bs} is booked by others")
             print("enter seat no that is not booked by others")
-            return bookingseats(nos,nos)
+            return bookingseats(i,nos)
         cursor.execute("select seats from points ")
         max_sno = cursor.fetchone()
         max_sno = int(max_sno[0])
